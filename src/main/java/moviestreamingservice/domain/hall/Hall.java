@@ -27,5 +27,9 @@ public class Hall {
     private Cinema cinema;
     @OneToMany(mappedBy="hall", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShowTime> showTimes = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "hall_seats", joinColumns = @JoinColumn(name="hall_id"))
+    @Column(name = "seat")
+    private List<String> seats = new ArrayList<>();
 
 }

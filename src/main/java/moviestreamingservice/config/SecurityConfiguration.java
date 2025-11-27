@@ -23,9 +23,10 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable);
         http
                 .authorizeHttpRequests(request->{
-                    request.requestMatchers("/api/v1/auth/**","/api/v1/movies/**")
-                            .permitAll();
-                    request.anyRequest().authenticated();
+                    request.requestMatchers("/api/auth/**").permitAll()
+                            .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                            .requestMatchers("/api/**").permitAll()
+                            .anyRequest().authenticated();
                 });
         http
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @Builder
@@ -24,8 +26,11 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name="showtime_id")
     private ShowTime showTime;
-    private int reservedSeats;
+
+    @ElementCollection
+    @CollectionTable(name="reservation_seats", joinColumns = @JoinColumn(name="reservation_id"))
+    @Column(name="seat")
+    private List<String> seats;
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
-
 }

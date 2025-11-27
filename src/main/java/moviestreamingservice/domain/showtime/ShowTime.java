@@ -31,6 +31,7 @@ public class ShowTime {
     private Hall hall;
     @OneToMany(mappedBy = "showTime", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
+    private double pricePerSeat;
     private int availableSeats;
     private LocalDateTime startTime;
 }
