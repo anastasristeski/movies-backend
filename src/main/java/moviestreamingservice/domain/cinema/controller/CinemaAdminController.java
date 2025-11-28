@@ -1,8 +1,13 @@
 package moviestreamingservice.domain.cinema.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import moviestreamingservice.domain.cinema.Cinema;
 import moviestreamingservice.domain.cinema.CinemaService;
+import moviestreamingservice.domain.cinema.dto.CinemaRequest;
+import moviestreamingservice.domain.cinema.dto.CinemaResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,15 +16,21 @@ import org.springframework.web.bind.annotation.*;
 public class CinemaAdminController {
     private final CinemaService cinemaService;
     @PostMapping("/city/{cityId}")
-    public Cinema createCinema(@PathVariable Long cityId, @RequestBody Cinema cinema) {
-        return cinemaService.createCinema(cityId, cinema);
+    public ResponseEntity<CinemaResponse> createCinema(
+            @PathVariable @Positive Long cityId,
+            @Valid @RequestBody CinemaRequest cinemaRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(cinemaService.createCinema(cityId, cinemaRequest));
     }
     @PutMapping("/{id}")
-    public Cinema updateCinema(@PathVariable Long id, @RequestBody Cinema updated) {
-        return cinemaService.updateCinema(id, updated);
+    public ResponseEntity<CinemaResponse> updateCinema(
+            @PathVariable Long id,
+            @RequestBody CinemaRequest updatedRequest) {
+        return ResponseEntity.ok(cinemaService.updateCinema(id,updatedRequest));
     }
     @DeleteMapping("/{id}")
-    public void deleteCinema(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCinema(@PathVariable @Positive Long id) {
         cinemaService.deleteCinema(id);
+        return ResponseEntity.noContent().build();
     }
 }

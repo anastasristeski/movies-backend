@@ -1,8 +1,10 @@
 package moviestreamingservice.domain.reservation.controller;
 
 import lombok.RequiredArgsConstructor;
-import moviestreamingservice.domain.reservation.Reservation;
+import moviestreamingservice.domain.reservation.ReservationMapper;
 import moviestreamingservice.domain.reservation.ReservationRepository;
+import moviestreamingservice.domain.reservation.dto.ReservationResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +17,11 @@ import java.util.List;
 public class ReservationAdminController {
     private final ReservationRepository reservationRepository;
     @GetMapping
-    public List<Reservation> getAllReservations() {
-        return reservationRepository.findAll();
+    public ResponseEntity<List<ReservationResponse>> getAllReservations() {
+        return ResponseEntity.ok(
+                reservationRepository.findAll()
+                        .stream()
+                        .map(ReservationMapper::toResponse)
+                        .toList());
     }
 }

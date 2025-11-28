@@ -91,6 +91,11 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+			<version>4.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -106,8 +111,6 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
-
-					<!-- THIS activates Lombok for Maven -->
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>

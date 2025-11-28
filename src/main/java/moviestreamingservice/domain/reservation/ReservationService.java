@@ -1,10 +1,13 @@
 package moviestreamingservice.domain.reservation;
 
 import lombok.RequiredArgsConstructor;
+import moviestreamingservice.domain.reservation.dto.ReservationResponse;
 import moviestreamingservice.domain.showtime.ShowTime;
 import moviestreamingservice.domain.showtime.ShowtimeRepository;
 import moviestreamingservice.domain.user.User;
 import moviestreamingservice.domain.user.UserRepository;
+import moviestreamingservice.exception.BadRequestException;
+import moviestreamingservice.exception.NotFoundException;
 import moviestreamingservice.utilities.SeatUtil;
 import org.springframework.stereotype.Service;
 
@@ -18,30 +21,26 @@ public class ReservationService {
     private final ShowtimeRepository showTimeRepository;
     private final UserRepository userRepository;
 
-    public Reservation createReservation(Long showTimeId, String email, List<String> seats) {
+    public ReservationResponse createReservation(Long showTimeId, String email, List<String> seats) {
 
         ShowTime showTime = showTimeRepository.findById(showTimeId)
-                .orElseThrow(() -> new RuntimeException("Showtime not found"));
+                .orElseThrow(() -> new NotFoundException("Showtime not found"));
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
-        List<String> allSeats = showTime.getHall().getSeats();
+        List<String> hallSeats = showTime.getHall().getSeats();
 
         for (String seat : seats) {
-
-            if (!SeatUtil.seatExists(seat, allSeats)) {
-                throw new RuntimeException("Invalid seat: " + seat);
+            if (!SeatUtil.seatExists(seat, hallSeats)) {
+                throw new BadRequestException("Invalid seat: " + seat);
             }
-
             boolean taken = reservationRepository
                     .existsByShowTime_IdAndSeatsContaining(showTimeId, seat);
-
             if (taken) {
-                throw new RuntimeException("Seat already reserved: " + seat);
+                throw new BadRequestException("Seat already reserved: " + seat);
             }
         }
-
         Reservation reservation = Reservation.builder()
                 .user(user)
                 .showTime(showTime)
@@ -49,20 +48,22 @@ public class ReservationService {
                 .status(ReservationStatus.UPCOMING)
                 .build();
 
-        return reservationRepository.save(reservation);
+        return ReservationMapper.toResponse(reservationRepository.save(reservation));
     }
 
-    public List<Reservation> getUserReservations(String email) {
-        return reservationRepository.findByUser_Email(email);
+    public List<ReservationResponse> getUserReservations(String email) {
+        return reservationRepository.findByUser_Email(email)
+                .stream()
+                .map(ReservationMapper::toResponse)
+                .toList();
     }
-
     public void cancelReservation(Long reservationId, String email) {
 
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+                .orElseThrow(() -> new NotFoundException("Reservation not found"));
 
         if (!reservation.getUser().getEmail().equals(email)) {
-            throw new RuntimeException("Not your reservation");
+            throw new BadRequestException("Not your reservation");
         }
 
         if (reservation.getStatus() != ReservationStatus.UPCOMING) {
@@ -72,12 +73,10 @@ public class ReservationService {
         reservation.setStatus(ReservationStatus.CANCELED);
         reservationRepository.save(reservation);
     }
-
-    // AVAILABLE SEATS FOR UI
     public List<String> getAvailableSeats(Long showTimeId) {
 
         ShowTime showTime = showTimeRepository.findById(showTimeId)
-                .orElseThrow(() -> new RuntimeException("Showtime not found"));
+                .orElseThrow(() -> new NotFoundException("Showtime not found"));
 
         List<String> allSeats = showTime.getHall().getSeats();
         List<String> reserved = reservationRepository.findSeatsByShowTimeId(showTimeId);

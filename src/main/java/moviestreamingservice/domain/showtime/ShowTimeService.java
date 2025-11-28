@@ -5,6 +5,9 @@ import moviestreamingservice.domain.hall.Hall;
 import moviestreamingservice.domain.hall.HallRepository;
 import moviestreamingservice.domain.movie.Movie;
 import moviestreamingservice.domain.movie.MovieRepository;
+import moviestreamingservice.domain.showtime.dto.ShowTimeRequest;
+import moviestreamingservice.domain.showtime.dto.ShowTimeResponse;
+import moviestreamingservice.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,30 +19,47 @@ public class ShowTimeService {
     private final HallRepository hallRepository;
     private final MovieRepository movieRepository;
 
-    public List<ShowTime> getShowTimesByHall(Long hallId) {
-        Hall hall = hallRepository.findById(hallId).orElseThrow(()->new RuntimeException("Hall not found"));
-        return hall.getShowTimes();
+    public List<ShowTimeResponse> getShowTimesByHall(Long hallId) {
+        Hall hall = hallRepository.findById(hallId).orElseThrow(()->new NotFoundException("Hall not found"));
+        return hall.getShowTimes().stream()
+                .map(ShowTimeMapper::toResponse)
+                .toList();
     }
-    public ShowTime createShowTime(Long hallId, Long movieId, ShowTime showTime) {
-        Hall hall = hallRepository.findById(hallId).orElseThrow(()-> new RuntimeException("Hall not found"));
-        Movie movie = movieRepository.findById(movieId).orElseThrow(()-> new RuntimeException("Movie not found"));
+    public ShowTimeResponse createShowTime(Long hallId, Long movieId, ShowTimeRequest showTimeRequest) {
+        Hall hall = hallRepository.findById(hallId).orElseThrow(()-> new NotFoundException("Hall not found"));
+        Movie movie = movieRepository.findById(movieId).orElseThrow(()-> new NotFoundException("Movie not found"));
+        ShowTime showTime = new ShowTime();
+
         showTime.setHall(hall);
         showTime.setMovie(movie);
-        return showtimeRepository.save(showTime);
+        showTime.setPricePerSeat(showTimeRequest.pricePerSeat());
+        showTime.setStartTime(showTimeRequest.startTime());
+
+        return ShowTimeMapper.toResponse(showtimeRepository.save(showTime));
     }
-    public List<ShowTime> getShowTimesByCinema(Long cinemaId) {
-        return showtimeRepository.findByHall_Cinema_Id(cinemaId);
+    public List<ShowTimeResponse> getShowTimesByCinema(Long cinemaId) {
+        return showtimeRepository.findByHall_Cinema_Id(cinemaId).stream()
+                .map(ShowTimeMapper::toResponse)
+                .toList();
     }
-    public List<ShowTime> getShowTimesByMovie(Long movieId) {
-        return showtimeRepository.findByMovie_TmdbId(movieId);
+    public List<ShowTimeResponse> getShowTimesByMovie(Long movieId) {
+        return showtimeRepository.findByMovie_TmdbId(movieId).stream()
+                .map(ShowTimeMapper::toResponse)
+                .toList();
     }
-    public List<ShowTime> getShowTimesByCinemaAndMovie(Long cinemaId, Long movieId) {
-        return showtimeRepository.findByHall_Cinema_IdAndMovie_TmdbId(cinemaId, movieId);
+    public List<ShowTimeResponse> getShowTimesByCinemaAndMovie(Long cinemaId, Long movieId) {
+        return showtimeRepository.findByHall_Cinema_IdAndMovie_TmdbId(cinemaId, movieId).stream()
+                .map(ShowTimeMapper::toResponse)
+                .toList();
     }
-    public ShowTime getShowTime(Long id) {
-        return showtimeRepository.findById(id).orElseThrow(()->new RuntimeException("Showtime not found"));
+    public ShowTimeResponse getShowTime(Long id) {
+        ShowTime showTime = showtimeRepository.findById(id).orElseThrow(()->new NotFoundException("ShowTime not found"));
+        return ShowTimeMapper.toResponse(showTime);
     }
     public void deleteShowTime(Long id) {
+        if(!showtimeRepository.existsById(id)){
+            throw new NotFoundException("ShowTime not found");
+        }
         showtimeRepository.deleteById(id);
     }
 

@@ -22,12 +22,10 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable);
         http
-                .authorizeHttpRequests(request->{
-                    request.requestMatchers("/api/auth/**").permitAll()
-                            .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                            .requestMatchers("/api/**").permitAll()
-                            .anyRequest().authenticated();
-                });
+                .authorizeHttpRequests(request-> request.requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/**").permitAll()
+                        .anyRequest().authenticated());
         http
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http

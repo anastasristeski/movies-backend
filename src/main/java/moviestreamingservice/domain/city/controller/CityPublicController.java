@@ -1,8 +1,10 @@
 package moviestreamingservice.domain.city.controller;
 
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import moviestreamingservice.domain.city.City;
 import moviestreamingservice.domain.city.CityService;
+import moviestreamingservice.domain.city.dto.CityResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +18,12 @@ import java.util.List;
 public class CityPublicController {
     private final CityService cityService;
     @GetMapping
-    public List<City> getAllCities(){
-        return cityService.getAllCities();
+    public ResponseEntity<List<CityResponse>> getAllCities(){
+        return ResponseEntity.ok(cityService.getAllCities());
     }
     @GetMapping("/{id}")
-    public City getCity(@PathVariable Long id) {
-        return cityService.getCityById(id);
+    public ResponseEntity<CityResponse> getCity(@PathVariable @Positive Long id) {
+        return ResponseEntity.ok(cityService.getCityById(id));
     }
+
 }
