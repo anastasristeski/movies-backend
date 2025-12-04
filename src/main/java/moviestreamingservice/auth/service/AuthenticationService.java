@@ -88,7 +88,7 @@ public class AuthenticationService {
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElse(null);
-        if( refreshToken == null || jwtService.isTokenExpired(refreshToken)) {
+        if(refreshToken == null || jwtService.isTokenExpired(refreshToken)) {
             throw new BadRequestException("Refresh token expired");
         }
         String email = jwtService.extractUsername(refreshToken);
