@@ -11,12 +11,11 @@ import lombok.RequiredArgsConstructor;
 import moviestreamingservice.config.JwtService;
 import moviestreamingservice.domain.user.User;
 import moviestreamingservice.domain.user.UserRepository;
+import moviestreamingservice.domain.user.UserResponse;
 import moviestreamingservice.exception.BadRequestException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 
@@ -37,26 +36,11 @@ public class AuthenticationController {
     }
     @PostMapping("/refresh")
     public ResponseEntity<AuthenticationResponse> refresh (HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            throw new BadRequestException("Bad request for refresh token");
-        }
-        String refreshToken = Arrays.stream(cookies)
-                .filter(cookie -> "refresh_token".equals(cookie.getName()))
-                .findFirst()
-                .map(Cookie::getValue)
-                .orElse(null);
-        if( refreshToken == null || jwtService.isTokenExpired(refreshToken)) {
-            throw new BadRequestException("Refresh token expired");
-        }
-        String email = jwtService.extractUsername(refreshToken);
-        User user = userRepository.findByEmail(email).orElseThrow(()-> new BadRequestException("Invalid email"));
-        var newAccessToken = jwtService.generateToken(user);
-        return ResponseEntity.ok(
-                AuthenticationResponse.builder()
-                        .token(newAccessToken)
-                        .build()
-        );
+     return authenticationService.refreshToken(request);
+    }
+    @GetMapping("/me")
+    public UserResponse getCurrentUser(@AuthenticationPrincipal User user) {
+        return new UserResponse(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName());
     }
     @PostMapping("/logout")
     public ResponseEntity<?> logout() {

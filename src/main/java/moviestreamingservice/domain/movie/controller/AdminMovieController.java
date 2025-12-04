@@ -3,7 +3,7 @@ package moviestreamingservice.domain.movie.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import moviestreamingservice.domain.movie.MovieService;
+import moviestreamingservice.domain.movie.service.MovieService;
 import moviestreamingservice.domain.movie.dto.MovieRequest;
 import moviestreamingservice.domain.movie.dto.MovieResponse;
 import org.springframework.http.HttpStatus;

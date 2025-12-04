@@ -1,6 +1,10 @@
-package moviestreamingservice.domain.movie;
+package moviestreamingservice.domain.movie.service;
 
 import lombok.RequiredArgsConstructor;
+import moviestreamingservice.domain.movie.Movie;
+import moviestreamingservice.domain.movie.MovieMapper;
+import moviestreamingservice.domain.movie.MovieRepository;
+import moviestreamingservice.domain.movie.dto.MovieDetailsResponse;
 import moviestreamingservice.domain.movie.dto.MovieRequest;
 import moviestreamingservice.domain.movie.dto.MovieResponse;
 import moviestreamingservice.exception.NotFoundException;
@@ -13,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MovieService {
     private final MovieRepository movieRepository;
+    private final MovieTrailerService movieTrailerService;
     public MovieResponse createMovie(MovieRequest movieRequest) {
         Movie movie = MovieMapper.toEntity(movieRequest);
         return MovieMapper.toResponse(movieRepository.save(movie));
@@ -50,6 +55,11 @@ public class MovieService {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException("Movie not found"));
         return MovieMapper.toResponse(movie);
+    }
+    public MovieDetailsResponse getDetailsById(Long id)  {
+        MovieResponse movieResponse = getById(id);
+        String trailerKey = movieTrailerService.getTrailerKey(id);
+        return new MovieDetailsResponse(movieResponse, trailerKey);
     }
     public List<MovieResponse> getAll(Pageable pageable) {
         return movieRepository.findAll(pageable)

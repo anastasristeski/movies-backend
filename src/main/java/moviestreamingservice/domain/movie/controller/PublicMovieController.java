@@ -2,7 +2,8 @@ package moviestreamingservice.domain.movie.controller;
 
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import moviestreamingservice.domain.movie.MovieService;
+import moviestreamingservice.domain.movie.dto.MovieDetailsResponse;
+import moviestreamingservice.domain.movie.service.MovieService;
 import moviestreamingservice.domain.movie.dto.MovieResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,7 @@ public class PublicMovieController {
         return ResponseEntity.ok(movieService.getAll(pageable));
     }
     @GetMapping("/{tmdbId}")
-    public ResponseEntity<MovieResponse> getMovie(@PathVariable @Positive Long tmdbId){
-        return ResponseEntity.ok(movieService.getById(tmdbId));
+    public ResponseEntity<MovieDetailsResponse> getMovie(@PathVariable @Positive Long tmdbId){
+        return ResponseEntity.ok(movieService.getDetailsById(tmdbId));
     }
 }
