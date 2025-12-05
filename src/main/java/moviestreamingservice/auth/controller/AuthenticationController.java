@@ -1,7 +1,6 @@
 package moviestreamingservice.auth.controller;
 
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import moviestreamingservice.auth.dto.AuthenticationRequest;
 import moviestreamingservice.auth.dto.AuthenticationResponse;
@@ -11,13 +10,10 @@ import lombok.RequiredArgsConstructor;
 import moviestreamingservice.config.JwtService;
 import moviestreamingservice.domain.user.User;
 import moviestreamingservice.domain.user.UserRepository;
-import moviestreamingservice.domain.user.UserResponse;
-import moviestreamingservice.exception.BadRequestException;
+import moviestreamingservice.domain.user.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -38,10 +34,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> refresh (HttpServletRequest request) {
      return authenticationService.refreshToken(request);
     }
-    @GetMapping("/me")
-    public UserResponse getCurrentUser(@AuthenticationPrincipal User user) {
-        return new UserResponse(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName());
-    }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout() {
         return authenticationService.logout();

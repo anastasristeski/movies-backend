@@ -99,7 +99,5 @@ public class AuthenticationService {
                         .token(newAccessToken)
                         .build()
         );
-
     }
-
 }
