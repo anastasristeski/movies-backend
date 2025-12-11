@@ -1,5 +1,6 @@
 package moviestreamingservice.domain.reservation;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import moviestreamingservice.domain.reservation.dto.ReservationResponse;
 import moviestreamingservice.domain.showtime.ShowTime;
@@ -20,7 +21,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final ShowtimeRepository showTimeRepository;
     private final UserRepository userRepository;
-
+    @Transactional
     public ReservationResponse createReservation(Long showTimeId, String email, List<String> seats) {
 
         ShowTime showTime = showTimeRepository.findById(showTimeId)

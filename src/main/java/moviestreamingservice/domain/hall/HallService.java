@@ -17,9 +17,14 @@ public class HallService {
     private final HallRepository hallRepository;
     private final CinemaRepository cinemaRepository;
     public List<HallResponse> getHallsByCinema(Long cinemaId) {
-        Cinema cinema = cinemaRepository.findById(cinemaId).orElseThrow(() -> new NotFoundException("Cinema not found"));
-        return cinema.getHalls().stream()
-                .map(HallMapper::mapHallToResponse).toList();
+        if(!cinemaRepository.existsById(cinemaId)){
+            throw new NotFoundException("Cinema not found");
+        }
+        return hallRepository.findByCinemaId(cinemaId).stream()
+                .map(HallMapper::mapHallToResponse)
+                .toList();
+
+
     }
     public HallResponse getHall(Long id) {
         Hall hall = hallRepository.findById(id).orElseThrow(()->new NotFoundException("Hall not found"));

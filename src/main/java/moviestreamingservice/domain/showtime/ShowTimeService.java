@@ -20,10 +20,10 @@ public class ShowTimeService {
     private final MovieRepository movieRepository;
 
     public List<ShowTimeResponse> getShowTimesByHall(Long hallId) {
-        Hall hall = hallRepository.findById(hallId).orElseThrow(()->new NotFoundException("Hall not found"));
-        return hall.getShowTimes().stream()
-                .map(ShowTimeMapper::toResponse)
-                .toList();
+        if(!hallRepository.existsById(hallId)){
+            throw new NotFoundException("Hall with id " + hallId + " not found");
+        }
+        return showtimeRepository.findByHallId(hallId).stream().map(ShowTimeMapper::toResponse).toList();
     }
     public ShowTimeResponse createShowTime(Long hallId, Long movieId, ShowTimeRequest showTimeRequest) {
         Hall hall = hallRepository.findById(hallId).orElseThrow(()-> new NotFoundException("Hall not found"));

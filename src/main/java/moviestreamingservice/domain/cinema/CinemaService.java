@@ -17,30 +17,19 @@ public class CinemaService {
     private final CityRepository cityRepository;
     public List<CinemaResponse> getAllCinemas() {
         return cinemaRepository.findAll().stream()
-                .map(cinema -> new CinemaResponse(
-                        cinema.getId(),
-                        cinema.getName(),
-                        cinema.getCity().getId())
+                .map(CinemaMapper::toResponse
                 )
                 .toList();
     }
     public List<CinemaResponse> getCinemaByCity(Long cityId) {
         City city = cityRepository.findById(cityId).orElseThrow(()->new NotFoundException("City not found"));
         return city.getCinemas().stream()
-                .map(cinema-> new CinemaResponse(
-                        cinema.getId(),
-                        cinema.getName(),
-                        cityId
-                ))
+                .map(CinemaMapper::toResponse)
                 .toList();
     }
     public CinemaResponse getCinemaById(Long cinemaId) {
         Cinema cinema = cinemaRepository.findById(cinemaId).orElseThrow(()-> new NotFoundException("City not found"));
-        return new CinemaResponse(
-                cinema.getId(),
-                cinema.getName(),
-                cinema.getCity().getId()
-        );
+        return  CinemaMapper.toResponse(cinema);
     }
     public CinemaResponse createCinema(Long cityId, CinemaRequest cinemaRequest) {
         City city = cityRepository.findById(cityId).orElseThrow(()->new NotFoundException("City not found"));
@@ -48,22 +37,14 @@ public class CinemaService {
         cinema.setName(cinemaRequest.name());
         cinema.setCity(city);
         Cinema savedCinema = cinemaRepository.save(cinema);
-        return new CinemaResponse(
-                savedCinema.getId(),
-                savedCinema.getName(),
-                cityId
-        );
+        return  CinemaMapper.toResponse(savedCinema);
     }
 
     public CinemaResponse updateCinema(Long id, CinemaRequest cinemaRequest) {
        Cinema cinema = cinemaRepository.findById(id).orElseThrow(()->new NotFoundException("Cinema not found"));
        cinema.setName(cinemaRequest.name());
        Cinema updatedCinema = cinemaRepository.save(cinema);
-       return new CinemaResponse(
-               updatedCinema.getId(),
-               updatedCinema.getName(),
-               updatedCinema.getCity().getId()
-       );
+        return  CinemaMapper.toResponse(updatedCinema);
     }
     public void deleteCinema(Long cinemaId) {
         if(!cinemaRepository.existsById(cinemaId)){

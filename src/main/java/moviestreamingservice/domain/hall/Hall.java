@@ -18,7 +18,7 @@ import java.util.List;
 @Table(name="hall")
 public class Hall {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int hallNumber;
     private int totalSeats;

@@ -19,9 +19,10 @@ import java.util.List;
 @Table(name="cinema")
 public class Cinema {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String location;
     @ManyToOne
     @JoinColumn(name="city_id")
     private City city;

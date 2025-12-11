@@ -21,7 +21,7 @@ import java.util.List;
 @Table(name="show_time")
 public class ShowTime {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name ="movie_id")
