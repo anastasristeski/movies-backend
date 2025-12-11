@@ -8,6 +8,8 @@ import moviestreamingservice.domain.movie.dto.MovieDetailsResponse;
 import moviestreamingservice.domain.movie.dto.MovieRequest;
 import moviestreamingservice.domain.movie.dto.MovieResponse;
 import moviestreamingservice.exception.NotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -61,10 +63,16 @@ public class MovieService {
         String trailerKey = movieTrailerService.getTrailerKey(id);
         return new MovieDetailsResponse(movieResponse, trailerKey);
     }
-    public List<MovieResponse> getAll(Pageable pageable) {
-        return movieRepository.findAll(pageable)
-                .stream()
-                .map(MovieMapper::toResponse)
-                .toList();
+    public Page<MovieResponse> getAll(Pageable pageable) {
+        Page<Movie> movies = movieRepository.findAll(pageable);
+        return movies.map(MovieMapper::toResponse);
     }
+    public Page<MovieResponse> searchMovies(String query, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Movie> movies = movieRepository.findByTitleContainingIgnoreCase(query, pageable);
+
+        return movies.map(MovieMapper::toResponse);
+    }
+
 }

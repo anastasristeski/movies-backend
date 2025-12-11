@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Table(name="watch_later", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "movie_id"}))
 public class WatchLater {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id")

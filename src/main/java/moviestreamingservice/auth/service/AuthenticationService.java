@@ -47,7 +47,7 @@ public class AuthenticationService {
                         (request.getEmail(), request.getPassword()));
         var user = repository
                 .findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(()->new BadRequestException("Wrong email"));
         var accessToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
 

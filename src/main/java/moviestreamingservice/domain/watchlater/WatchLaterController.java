@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/watchlater")
+@RequestMapping("/api/watch-later")
 public class WatchLaterController {
     private final WatchLaterService watchLaterService;
     @GetMapping
@@ -23,7 +23,7 @@ public class WatchLaterController {
     public ResponseEntity<WatchLaterResponse> add(@AuthenticationPrincipal User user, @PathVariable Long tmdbId) {
      return ResponseEntity.status(HttpStatus.CREATED).body(watchLaterService.addToWatchLater(user, tmdbId));
     }
-    @DeleteMapping("/tmdbId")
+    @DeleteMapping("/{tmdbId}")
     public ResponseEntity<?> remove(@AuthenticationPrincipal User user, @PathVariable Long tmdbId) {
         watchLaterService.removeFromWatchLater(user, tmdbId);
         return ResponseEntity.noContent().build();
