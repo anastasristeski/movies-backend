@@ -1,5 +1,7 @@
 package moviestreamingservice.domain.showtime.dto;
 
+import moviestreamingservice.domain.movie.dto.MovieResponse;
+
 import java.time.LocalDateTime;
 
 public record ShowTimeResponse(
@@ -8,6 +10,6 @@ public record ShowTimeResponse(
         LocalDateTime startTime,
         int availableSeats,
         Long hallId,
-        Long movieId
+        MovieResponse movieResponse
 ) {
 }

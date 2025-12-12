@@ -37,6 +37,7 @@ public class MovieService {
         movie.setPopularity(updatedReq.popularity());
         movie.setReleaseDate(updatedReq.releaseDate());
         movie.setGenres(updatedReq.genres());
+        movie.setRuntime(updatedReq.runtime());
 
         Movie saved = movieRepository.save(movie);
 

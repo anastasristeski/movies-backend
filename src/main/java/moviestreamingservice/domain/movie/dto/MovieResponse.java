@@ -12,6 +12,7 @@ public record MovieResponse(
         int voteCount,
         Double popularity,
         String releaseDate,
-        List<String> genres
+        List<String> genres,
+        Integer runtime
 ) {
 }

@@ -23,7 +23,10 @@ public class CinemaService {
     }
     public List<CinemaResponse> getCinemaByCity(Long cityId) {
         City city = cityRepository.findById(cityId).orElseThrow(()->new NotFoundException("City not found"));
-        return city.getCinemas().stream()
+        if(!cityRepository.existsById(cityId)){
+            throw new NotFoundException("City not found");
+        }
+        return cinemaRepository.findByCityId(cityId).stream()
                 .map(CinemaMapper::toResponse)
                 .toList();
     }

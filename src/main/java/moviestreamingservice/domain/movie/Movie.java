@@ -29,6 +29,7 @@ public class Movie {
     private int voteCount;
     private Double popularity;
     private String releaseDate;
+    private Integer runtime;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "movie_genres", joinColumns = @JoinColumn(name = "movie_id"))
     @Column(name = "genre")

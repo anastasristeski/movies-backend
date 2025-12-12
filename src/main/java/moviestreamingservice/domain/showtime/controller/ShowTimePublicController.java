@@ -5,11 +5,9 @@ import lombok.RequiredArgsConstructor;
 import moviestreamingservice.domain.showtime.ShowTimeService;
 import moviestreamingservice.domain.showtime.dto.ShowTimeResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -22,8 +20,8 @@ public class ShowTimePublicController {
         return ResponseEntity.ok(showTimeService.getShowTime(id));
     }
     @GetMapping("/cinema/{cinemaId}")
-    public ResponseEntity<List<ShowTimeResponse>> getShowTimesByCinema(@PathVariable @Positive Long cinemaId) {
-        return ResponseEntity.ok(showTimeService.getShowTimesByCinema(cinemaId));
+    public ResponseEntity<List<ShowTimeResponse>> getShowTimesByCinemaAndDate(@PathVariable @Positive Long cinemaId, @RequestParam LocalDate date) {
+        return ResponseEntity.ok(showTimeService.getShowTimesByCinemaAndDate(cinemaId,date));
     }
     @GetMapping("/movie/{movieId}")
     public ResponseEntity<List<ShowTimeResponse>> getShowTimesByMovie(@PathVariable @Positive Long movieId) {
@@ -35,5 +33,4 @@ public class ShowTimePublicController {
             @Positive @PathVariable Long movieId) {
         return ResponseEntity.ok(showTimeService.getShowTimesByCinemaAndMovie(cinemaId,movieId));
     }
-
 }

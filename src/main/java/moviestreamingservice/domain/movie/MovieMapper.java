@@ -14,7 +14,8 @@ public class MovieMapper {
                 movie.getVoteCount(),
                 movie.getPopularity(),
                 movie.getReleaseDate(),
-                movie.getGenres()
+                movie.getGenres(),
+               movie.getRuntime()
        );
     }
     public static Movie toEntity(MovieRequest request) {
@@ -29,6 +30,7 @@ public class MovieMapper {
                 .popularity(request.popularity())
                 .releaseDate(request.releaseDate())
                 .genres(request.genres())
+                .runtime(request.runtime())
                 .build();
     }
 

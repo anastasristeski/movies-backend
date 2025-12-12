@@ -2,6 +2,8 @@ package moviestreamingservice.domain.reservation;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,5 +16,7 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     List<Reservation> findByUser_Email(String email);
     boolean existsByShowTime_IdAndSeatsContaining(Long showTimeId, String seat);
     List<String> findSeatsByShowTimeId(Long showTimeId);
+    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.showTime.id = :showTimeId")
+    int countReservationsForShowtime(@Param("showTimeId") Long showTimeId);
 
 }

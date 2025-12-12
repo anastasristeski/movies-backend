@@ -15,6 +15,7 @@ public record MovieRequest(
         @NotNull int voteCount,
         @NotNull Double popularity,
         @NotBlank String releaseDate,
-        List<String> genres
+        List<String> genres,
+        Integer runtime
 ) {
 }
