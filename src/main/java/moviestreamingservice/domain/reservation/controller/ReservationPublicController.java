@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import moviestreamingservice.domain.reservation.dto.ReservationRequest;
 import moviestreamingservice.domain.reservation.ReservationService;
 import moviestreamingservice.domain.reservation.dto.ReservationResponse;
+import moviestreamingservice.domain.reservation.dto.SeatAvailabilityResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,14 +30,15 @@ public class ReservationPublicController {
                 request.seats()
         ));
     }
+    @GetMapping("/availability/{showTimeId}")
+    public ResponseEntity<SeatAvailabilityResponse> getSeatAvailability(@PathVariable Long showTimeId) {
+        return ResponseEntity.ok(reservationService.getSeatAvailability(showTimeId));
+    }
     @GetMapping("/me")
     public ResponseEntity<List<ReservationResponse>> getMyReservations(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(reservationService.getUserReservations(userDetails.getUsername()));
     }
-    @GetMapping("/seats/{showTimeId}")
-    public ResponseEntity<List<String>> getAvailableSeats(@PathVariable Long showTimeId) {
-        return ResponseEntity.ok(reservationService.getAvailableSeats(showTimeId));
-    }
+
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId, @AuthenticationPrincipal UserDetails userDetails) {
          reservationService.cancelReservation(reservationId, userDetails.getUsername());

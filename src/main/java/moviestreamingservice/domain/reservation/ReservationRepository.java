@@ -15,8 +15,16 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     boolean existsByShowTime_IdAndStatusAndSeatsContaining(Long showTimeId,ReservationStatus status ,String seat);
     List<Reservation> findByUser_Email(String email);
     boolean existsByShowTime_IdAndSeatsContaining(Long showTimeId, String seat);
-    List<String> findSeatsByShowTimeId(Long showTimeId);
+    @Query("""
+   SELECT seat
+   FROM Reservation r
+   JOIN r.seats seat
+   WHERE r.showTime.id = :showTimeId
+     AND r.status <> 'CANCELED'
+""")
+    List<String> findTakenSeatsByShowTimeId(@Param("showTimeId") Long showTimeId);
     @Query("SELECT COUNT(r) FROM Reservation r WHERE r.showTime.id = :showTimeId")
     int countReservationsForShowtime(@Param("showTimeId") Long showTimeId);
+
 
 }

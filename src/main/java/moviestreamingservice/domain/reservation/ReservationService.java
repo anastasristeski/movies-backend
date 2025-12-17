@@ -3,6 +3,7 @@ package moviestreamingservice.domain.reservation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import moviestreamingservice.domain.reservation.dto.ReservationResponse;
+import moviestreamingservice.domain.reservation.dto.SeatAvailabilityResponse;
 import moviestreamingservice.domain.showtime.ShowTime;
 import moviestreamingservice.domain.showtime.ShowtimeRepository;
 import moviestreamingservice.domain.user.User;
@@ -80,10 +81,17 @@ public class ReservationService {
                 .orElseThrow(() -> new NotFoundException("Showtime not found"));
 
         List<String> allSeats = showTime.getHall().getSeats();
-        List<String> reserved = reservationRepository.findSeatsByShowTimeId(showTimeId);
+        List<String> reserved = reservationRepository.findTakenSeatsByShowTimeId(showTimeId);
 
         return allSeats.stream()
                 .filter(seat -> !reserved.contains(seat))
                 .toList();
+    }
+    public SeatAvailabilityResponse getSeatAvailability(Long showTimeId) {
+        ShowTime showTime = showTimeRepository.findByIdWithHallSeats(showTimeId).orElseThrow(()-> new NotFoundException("Showtime not found"));
+        List<String> allSeats = showTime.getHall().getSeats();
+        List<String> takenSeats = reservationRepository.findTakenSeatsByShowTimeId(showTimeId);
+        return new SeatAvailabilityResponse(allSeats, takenSeats);
+
     }
 }
