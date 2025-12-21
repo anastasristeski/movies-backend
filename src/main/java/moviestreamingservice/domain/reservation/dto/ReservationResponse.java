@@ -4,8 +4,10 @@ import java.util.List;
 
 public record ReservationResponse(
         Long id,
-        String userEmail,
-        Long showTimeId,
+        String movieTitle,
+        String cinemaName,
+        String startTime,
+        int hallNumber,
         List<String> seats,
         String status
 ) {}

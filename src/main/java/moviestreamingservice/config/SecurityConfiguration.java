@@ -28,11 +28,38 @@ public class SecurityConfiguration {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable);
-        http
-                .authorizeHttpRequests(request-> request.requestMatchers("/api/auth/**","/swagger-ui/**","/v3/api-docs/**","/v3/api-docs/swagger-config").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/**").permitAll()
-                        .anyRequest().authenticated());
+        http.authorizeHttpRequests(req -> req
+
+                // public auth + docs
+                .requestMatchers(
+                        "/api/auth/**",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/v3/api-docs/swagger-config"
+                ).permitAll()
+
+                // public browsing
+                .requestMatchers(
+                        "/api/city/**",
+                        "/api/cinema/**",
+                        "/api/showtime/**",
+                        "/api/trending/**",
+                        "/api/reservation/availability/**"
+                ).permitAll()
+
+                // authenticated user actions
+                .requestMatchers(
+                        "/api/watch-later/**",
+                        "/api/reservation/me",
+                        "/api/reservation/**"
+                ).authenticated()
+
+                // admin
+                .requestMatchers("/api/admin/**").hasRole("ADMIN").anyRequest().permitAll()
+
+
+                // everything else
+        );
         http
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http

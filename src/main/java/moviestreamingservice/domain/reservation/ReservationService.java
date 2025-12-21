@@ -53,8 +53,9 @@ public class ReservationService {
         return ReservationMapper.toResponse(reservationRepository.save(reservation));
     }
 
-    public List<ReservationResponse> getUserReservations(String email) {
-        return reservationRepository.findByUser_Email(email)
+    public List<ReservationResponse> getUserReservations(String  userEmail) {
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("User not found"));
+        return reservationRepository.findAllByUserIdWithDetails(user.getId())
                 .stream()
                 .map(ReservationMapper::toResponse)
                 .toList();

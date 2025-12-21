@@ -25,6 +25,15 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     List<String> findTakenSeatsByShowTimeId(@Param("showTimeId") Long showTimeId);
     @Query("SELECT COUNT(r) FROM Reservation r WHERE r.showTime.id = :showTimeId")
     int countReservationsForShowtime(@Param("showTimeId") Long showTimeId);
-
+    @Query("""
+    select distinct r from Reservation r
+    join fetch r.seats s
+    join fetch r.showTime st
+    join fetch st.movie
+    join fetch st.hall h
+    join fetch h.cinema
+    where r.user.id = :userId
+""")
+    List<Reservation> findAllByUserIdWithDetails(@Param("userId") Long userId);
 
 }

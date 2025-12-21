@@ -6,6 +6,7 @@ import moviestreamingservice.domain.reservation.dto.ReservationRequest;
 import moviestreamingservice.domain.reservation.ReservationService;
 import moviestreamingservice.domain.reservation.dto.ReservationResponse;
 import moviestreamingservice.domain.reservation.dto.SeatAvailabilityResponse;
+import moviestreamingservice.domain.user.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,8 +36,8 @@ public class ReservationPublicController {
         return ResponseEntity.ok(reservationService.getSeatAvailability(showTimeId));
     }
     @GetMapping("/me")
-    public ResponseEntity<List<ReservationResponse>> getMyReservations(@AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(reservationService.getUserReservations(userDetails.getUsername()));
+    public ResponseEntity<List<ReservationResponse>> getMyReservations(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(reservationService.getUserReservations(user.getUsername()));
     }
 
     @DeleteMapping("/{reservationId}")
