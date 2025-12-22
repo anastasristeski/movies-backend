@@ -30,7 +30,6 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(req -> req
 
-                // public auth + docs
                 .requestMatchers(
                         "/api/auth/**",
                         "/swagger-ui/**",
@@ -38,7 +37,6 @@ public class SecurityConfiguration {
                         "/v3/api-docs/swagger-config"
                 ).permitAll()
 
-                // public browsing
                 .requestMatchers(
                         "/api/city/**",
                         "/api/cinema/**",
@@ -47,18 +45,15 @@ public class SecurityConfiguration {
                         "/api/reservation/availability/**"
                 ).permitAll()
 
-                // authenticated user actions
                 .requestMatchers(
                         "/api/watch-later/**",
                         "/api/reservation/me",
                         "/api/reservation/**"
                 ).authenticated()
 
-                // admin
                 .requestMatchers("/api/admin/**").hasRole("ADMIN").anyRequest().permitAll()
 
 
-                // everything else
         );
         http
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

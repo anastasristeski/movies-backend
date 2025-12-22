@@ -24,6 +24,7 @@ public class UserService {
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
+                user.getRole().name(),
                 user.getCreatedAt()
         );
     }

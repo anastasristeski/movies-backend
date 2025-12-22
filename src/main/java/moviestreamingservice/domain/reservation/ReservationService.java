@@ -9,6 +9,7 @@ import moviestreamingservice.domain.showtime.ShowtimeRepository;
 import moviestreamingservice.domain.user.User;
 import moviestreamingservice.domain.user.UserRepository;
 import moviestreamingservice.exception.BadRequestException;
+import moviestreamingservice.exception.ConflictException;
 import moviestreamingservice.exception.NotFoundException;
 import moviestreamingservice.utilities.SeatUtil;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class ReservationService {
             boolean taken = reservationRepository
                     .existsByShowTime_IdAndSeatsContaining(showTimeId, seat);
             if (taken) {
-                throw new BadRequestException("Seat already reserved: " + seat);
+                throw new ConflictException("Seat already reserved: " + seat);
             }
         }
         Reservation reservation = Reservation.builder()

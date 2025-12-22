@@ -16,7 +16,7 @@ public class UserController {
     private final UserService userService;
     @GetMapping("/me")
     public UserResponse getCurrentUser(@AuthenticationPrincipal User user) {
-        return new UserResponse(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getCreatedAt());
+        return new UserResponse(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getRole().name(),user.getCreatedAt());
     }
     @PutMapping("/edit")
     public ResponseEntity<UserResponse> editUser(@AuthenticationPrincipal User user, @RequestBody EditProfileRequest editProfileRequest) {

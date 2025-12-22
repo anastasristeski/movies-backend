@@ -10,11 +10,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/city")
 public class CityAdminController {
     private final CityService cityService;
+    @GetMapping
+    public ResponseEntity<List<CityResponse>> getAllCities(){
+        return ResponseEntity.ok(cityService.getAllCities());
+    }
     @PostMapping
     public ResponseEntity<CityResponse> createCity(@Valid @RequestBody CityRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
