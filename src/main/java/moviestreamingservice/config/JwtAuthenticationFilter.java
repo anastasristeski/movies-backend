@@ -41,7 +41,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             userEmail = jwtService.extractUsername(jwt);
         } catch (Exception e) {
-            // 🔥 INVALID TOKEN → IGNORE IT
             filterChain.doFilter(request, response);
             return;
         }
